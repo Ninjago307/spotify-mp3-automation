@@ -1,131 +1,111 @@
-# Spotify Downloader Pro 🎵
+# Spotify MP3 Automation
 
-A professional-grade, automated tool to download Spotify playlists and tracks as high-quality MP3s with full metadata and cover art.
+A high-fidelity music downloader that automates Spotify playlist extraction and YouTube-based MP3 conversion with full metadata tagging. Runs entirely locally, requiring no API keys or third-party accounts.
 
-![Project Banner](https://via.placeholder.com/1000x500/1db954/ffffff?text=Spotify+Downloader+Pro)
+## How It Works
 
-## ✨ Features
+This tool orchestrates a multi-step process to transform Spotify links into tagged MP3 files:
 
-*   **🚫 No API Key Required**: Fetches metadata without complex Spotify Developer accounts.
-*   **🎧 High Quality Audio**: Downloads up to 320kbps using `yt-dlp`.
-*   **🏷️ Automatic Tagging**: Adds Cover Art, Artist, Album, Title, and Year metadata.
-*   **🧠 Smart Matching**: Verifies duration and title match to avoid wrong versions.
-*   **🎨 Modern UI**: Beautiful, responsive Glassmorphism interface.
-*   **🚀 Batch Processing**: Download entire playlists or albums at once.
+*   **Playlist Extraction**: Uses headless browser automation (Puppeteer) to scrape track metadata (Title, Artist, Album, Cover Art) directly from Spotify's web interface.
+*   **Source Resolution**: Queries YouTube via `yt-search` to find the most accurate audio match based on duration and title similarity.
+*   **High-Quality Download**: Leverages `yt-dlp` to extract the best available audio stream (up to 320kbps).
+*   **Format Conversion**: Utilizes FFmpeg to convert the raw stream into MP3 format.
+*   **Metadata Tagging**: Automatically embeds ID3 tags, including Cover Art, Artist, Album, and Year, into the final file.
 
----
+## Screenshots
 
-## 📥 Installation Guide (Step-by-Step)
+![Application Interface](https://via.placeholder.com/800x400?text=Application+Interface)
 
-If you are setting this up on a **new laptop**, follow these steps exactly.
+*Clean, responsive UI with real-time download progress.*
 
-### 1. Install Prerequisites
+![Terminal Output](https://via.placeholder.com/800x200?text=Terminal+Log+Output)
 
-#### Windows 🪟
-*   **Node.js**: Download and install the "LTS" version from [nodejs.org](https://nodejs.org/).
-*   **Git**: Download and install from [git-scm.com](https://git-scm.com/downloads).
+*Detailed logging for debugging and transparency.*
 
-#### Mac / Linux 🍎🐧
-You need Homebrew installed. Then run:
-```bash
-brew install node git yt-dlp ffmpeg
-```
-*(No need to manually download exe files on Mac)*
+## Installation
 
-### 2. Download the Project
+### Prerequisites
 
-Open a terminal (Command Prompt or PowerShell) and run:
+You must have the following installed on your system:
+
+1.  **Node.js (LTS)**: Required for the runtime environment.
+2.  **Git**: Required for version control.
+3.  **FFmpeg**: Required for audio processing.
+    *   **Windows**: Download `ffmpeg.exe` and place it in the project root.
+    *   **Mac/Linux**: Install via package manager (e.g., `brew install ffmpeg`).
+
+### Setup
+
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/Ninjago307/spotify-mp3-automation.git
 cd spotify-mp3-automation
-```
-
-*Alternatively, you can click the green "Code" button on GitHub and select "Download ZIP", then extract it.*
-
-### 3. Install Dependencies
-
-In the project folder, run this command to install the required libraries:
-
-```bash
 npm install
 ```
 
-> **Note:** If you see "audit" warnings, you can usually ignore them.
+### Running the Application
 
-### 4. Set Up FFmpeg (Crucial for MP3 Conversion)
+Start the local server:
 
-This tool depends on **FFmpeg** to convert audio to MP3.
-
-1.  Download **ffmpeg-master-latest-win64-gpl.zip** from [this link](https://github.com/BtbN/FFmpeg-Builds/releases).
-2.  Open the zip file.
-3.  Go into the `bin` folder inside the zip.
-4.  Copy `ffmpeg.exe`.
-5.  **Paste `ffmpeg.exe` directly into this project's folder**.
-
-It should look like this:
-
-```
-spotify-mp3-automation/
-├── ...
-├── package.json
-├── start.bat
-├── yt-dlp.exe
-└── ffmpeg.exe  <-- PASTE HERE
+**Windows**:
+Double-click `start.bat` or run:
+```bash
+npm start
 ```
 
-**Verify:** You should see `ffmpeg.exe` right next to `start.bat` and `package.json`.
+**Mac/Linux**:
+Run the shell script or npm command:
+```bash
+sh start.sh
+# OR
+npm start
+```
 
-### 5. Run the Application
+Access the interface at `http://localhost:3000`.
 
-Now you are ready to start!
+## Developer Experience
 
-#### Windows
-*   **Double-click** `start.bat`
-*   *OR* run `npm start` in the terminal.
+### Environment Variables
 
-#### Mac / Linux
-*   Open terminal in the folder and run:
-    ```bash
-    sh start.sh
-    # OR
-    npm start
-    ```
+Configuration is optional but supported via a `.env` file. See `.env.example` for details.
 
-The application should automatically open in your browser at `http://localhost:3000`.
+*   `PORT`: Override the default server port (Default: 3000).
+*   `EDGE_PATH`: Manually specify the path to the Edge/Chrome executable if auto-detection fails.
 
----
+### Project Structure
 
-## 📝 Usage
+*   `lib/`: Core logic modules.
+    *   `downloader.js`: Handles audio extraction via `yt-dlp`.
+    *   `spotify.js`: Manages Puppeteer browser automation.
+    *   `tagger.js`: Embeds metadata into MP3 files.
+    *   `utils.js`: Helper functions for logging and path detection.
+*   `public/`: Frontend assets (HTML/CSS/JS).
+*   `server.js`: Express server entry point.
+*   `output/`: default directory for downloaded files.
 
-1.  **Paste a Spotify Link**: Works with Tracks, Albums, or Playlists.
-2.  **Choose Output Folder** (Optional): Defaults to an `output` folder inside the project.
-3.  **Click "Start Download"**.
-4.  Watch the progress! Music will be saved with full tags.
+### Logging
 
----
+The application uses a custom logging system found in `lib/utils.js`. Logs are displayed in the console and streamed to the frontend.
 
-## ❓ Troubleshooting
+*   **INFO**: General process updates (e.g., "Starting download...").
+*   **WARN**: Non-critical issues (e.g., "Cover art not found").
+*   **ERROR**: Critical failures preventing a download (e.g., "Network timeout").
 
-### "Cannot find module '...'"
-If you see an error saying a module is missing (e.g., `dotenv`), it means dependencies weren't installed.
-*   **Fix**: Run `npm install` again in the project folder.
+## Reliability & Limitations
 
-### "ffmpeg is not recognized" or Download Fails
-If downloads start but fail immediately or audio isn't converting:
-*   **Fix**: Ensure `ffmpeg.exe` is in the project folder.
+*   **Matching Accuracy**: The tool uses fuzzy matching algorithms. Occasionally, live versions, remixes, or covers may be selected if the official audio is not the top result on YouTube.
+*   **Region Locking**: Downloads depend on YouTube availability. Content restricted in your region will fail to download.
+*   **Private Playlists**: The tool can only access Public or Unlisted Spotify playlists. Private playlists are not supported.
 
-### "git is not recognized"
-*   **Fix**: Ensure you installed Git and restarted your terminal/computer.
+## Roadmap
 
----
+*   [ ] **Queue Management**: Implement a persistent download queue for handling multiple playlists.
+*   [ ] **Headless Toggle**: Add a UI switch to run the browser in fully headless mode.
+*   [ ] **Metadata Editor**: Allow users to manually correct tags before final save.
+*   [ ] **Docker Support**: Containerize the application for easier deployment.
+*   [ ] **Bitrate Selection**: Add options for 128kbps, 192kbps, and 320kbps.
 
-## 🛠️ Tech Stack
+## Legal Disclaimer
 
-*   **Frontend**: HTML5, CSS3, Vanilla JS
-*   **Backend**: Node.js, Express
-*   **Core**: `puppeteer-core`, `yt-dlp`, `fluent-ffmpeg`, `yt-search`
-
----
-
-*Built for educational purposes.*
+This software is provided for educational and personal use only. The developers assume no liability for misuse. Users are responsible for complying with the Terms of Service of both Spotify and YouTube. Please respect copyright laws and support artists by streaming on official platforms.
