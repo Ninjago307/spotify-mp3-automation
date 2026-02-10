@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Downloader Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1db954;
+            --dark: #121212;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background: radial-gradient(circle at 20% 20%, #2a2a2a 0%, #000 100%);
+        }
+
+        /* Abstract Blobs */
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: #1db954;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: #1ed760;
+            animation-delay: -2s;
+            animation-duration: 10s;
+        }
+
+        .blob-3 {
+            top: 40%;
+            left: 40%;
+            width: 300px;
+            height: 300px;
+            background: #4a90e2;
+            animation-delay: -10s;
+            animation-duration: 22s;
+            opacity: 0.4;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1) rotate(10deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+        }
+
+        .container {
+            z-index: 10;
+            width: 90%;
+            max-width: 800px;
+            /* Wider for new layout */
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #bbb);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 20px 25px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #downloadBtn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 20px rgba(29, 185, 84, 0.3);
+        }
+
+        #downloadBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(29, 185, 84, 0.4);
+        }
+
+        #downloadBtn:active {
+            transform: translateY(0);
+        }
+
+        #downloadBtn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        #stopBtn {
+            background: rgb(220, 53, 69);
+            color: white;
+            display: none;
+        }
+
+        #stopBtn:hover {
+            background: rgb(200, 35, 51);
+        }
+
+        /* Progress Section */
+        #progressSection {
+            display: none;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .current-track-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .album-art {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            background: #222;
+            object-fit: cover;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-details {
+            flex: 1;
+        }
+
+        .track-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .track-details p {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .track-details .meta {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Logs Console */
+        .logs-container {
+            margin-top: 20px;
+            background: #0d0d0d;
+            border-radius: 12px;
+            padding: 15px;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #222;
+            color: #aaa;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry.highlight {
+            color: var(--primary);
+        }
+
+        .log-entry.error {
+            color: #ff4757;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="container">
+        <header>
+            <h1>Spotify <span style="color: var(--primary)">Downloader</span></h1>
+            <p>High Quality (320kbps) • Metadata • Cover Art</p>
+        </header>
+
+        <div class="input-group">
+            <input type="text" id="playlistUrl" placeholder="Paste Spotify Track, Album, or Playlist URL...">
+        </div>
+
+        <!-- Optional Path Input -->
+        <div class="input-group">
+            <input type="text" id="downloadPath" placeholder="Custom Output Folder (Optional)">
+        </div>
+
+        <div class="actions">
+            <button id="downloadBtn">Start Download</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+
+        <div id="progressSection">
+            <div class="current-track-card">
+                <img src="" alt="Album Art" id="currentCover" class="album-art"
+                    style="opacity: 0; transition: opacity 0.5s;">
+                <div class="track-details">
+                    <h3 id="currentTitle">Waiting...</h3>
+                    <p id="currentStatus">Initializing...</p>
+                    <div class="meta" id="currentMeta"></div>
+                </div>
+            </div>
+
+            <div class="logs-container" id="logs"></div>
+        </div>
+    </div>
+
+    <script src="script.js?v=2"></script>
+
+</body>
+
+</html>

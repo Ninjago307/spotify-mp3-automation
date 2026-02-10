@@ -1,0 +1,27 @@
+Running Diagnosis... 
+--------------------------------------------------- 
+CHECKING GIT VERSION: 
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+ 
+INITIALIZING REPO: 
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+ 
+CONFIGURING REMOTE: 
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+ 
+PUSHING TO GITHUB: 
+'git' is not recognized as an internal or external command,
+operable program or batch file.
+ 
+--------------------------------------------------- 
