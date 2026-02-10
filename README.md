@@ -56,7 +56,20 @@ This tool depends on **FFmpeg** to convert audio to MP3.
 2.  Open the zip file.
 3.  Go into the `bin` folder inside the zip.
 4.  Copy `ffmpeg.exe`.
-5.  **Paste `ffmpeg.exe` directly into this project's folder** (where `package.json` and `start.bat` are).
+5.  **Paste `ffmpeg.exe` directly into this project's folder**.
+
+It should look like this:
+
+```
+spotify-mp3-automation/
+├── ...
+├── package.json
+├── start.bat
+├── yt-dlp.exe
+└── ffmpeg.exe  <-- PASTE HERE
+```
+
+**Verify:** You should see `ffmpeg.exe` right next to `start.bat` and `package.json`.
 
 ### 5. Run the Application
 
