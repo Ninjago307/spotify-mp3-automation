@@ -21,11 +21,16 @@ If you are setting this up on a **new laptop**, follow these steps exactly.
 
 ### 1. Install Prerequisites
 
-Before you begin, you need to install a few tools:
-
+#### Windows 🪟
 *   **Node.js**: Download and install the "LTS" version from [nodejs.org](https://nodejs.org/).
 *   **Git**: Download and install from [git-scm.com](https://git-scm.com/downloads).
-    *   *During installation, you can just click "Next" through all the options.*
+
+#### Mac / Linux 🍎🐧
+You need Homebrew installed. Then run:
+```bash
+brew install node git yt-dlp ffmpeg
+```
+*(No need to manually download exe files on Mac)*
 
 ### 2. Download the Project
 
@@ -75,8 +80,17 @@ spotify-mp3-automation/
 
 Now you are ready to start!
 
+#### Windows
 *   **Double-click** `start.bat`
 *   *OR* run `npm start` in the terminal.
+
+#### Mac / Linux
+*   Open terminal in the folder and run:
+    ```bash
+    sh start.sh
+    # OR
+    npm start
+    ```
 
 The application should automatically open in your browser at `http://localhost:3000`.
 
